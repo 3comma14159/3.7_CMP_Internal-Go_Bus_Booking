@@ -1,0 +1,88 @@
+import
+
+class booking
+    def __init__
+        variables
+        frame
+
+        heading row 0
+        instructions row 1
+
+        name input row 2
+        Phone number input row 3
+
+        PN -> A row 4 col 0
+        A -> PN row 4 col 1
+        spinbox input seats PNA row 5 col 0
+            set max number to amount of available seats
+        seats info row 5 col 1
+        spinbox input seats APN row 5 col 2
+            set max number to amount of available seats
+        seats info row 5 col 3
+        spinbox input beds PNA row 5 col 0
+            set max number to amount of available seats
+        beds info row 5 col 1
+        spinbox input beds APN row 5 col 2
+            set max number to amount of available seats
+        beds info row 5 col 3
+
+        error message
+        button to book
+            calls check function
+            if error message:
+                display message
+            else:
+                block window
+                open confirm window
+
+
+
+    def check function
+        checks if name and phone number fields have been filled
+            yes:
+                check if phone number only has numbers, space and plus
+                    yes:
+                        checks if at least one seat booked
+                            yes: return passed
+                            no: return error message
+                    no: return error message
+            no: return error message
+
+class confirm
+    def __init__
+        variables
+        frame
+
+        heading row 0
+        instructions row 1
+        name phone number row 2
+
+        APN row 3
+        seats row 4 col 0
+        beds row 4 col 1
+        seats number row 5 col 0
+        seats price row 5 col 1
+        beds number row 5 col 2
+        beds price row 5 col 3
+
+        PNA row 6
+        seats row 7 col 0
+        beds row 7 col 1
+        seats number row 8 col 0
+        seats price row 8 col 1
+        beds number row 8 col 2
+        beds price row 8 col 3
+
+        total price row 9 col 0
+        gst portion row 9 col 1
+
+        cancel button row 10 col 0
+            close confirm window
+            unblock booking window
+        save button row 10 col 1
+            write to file
+            close confirm window
+            reset booking window
+
+
+main routine that calls booking
