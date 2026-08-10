@@ -19,15 +19,27 @@ class Booking:
         self.book_heading_label.grid(row=0)
 
         # instructions (row 1)
-        self.book_instructions_label = Label(self.booking_frame, text="Instructions", font="Helvetica 12 italic", bg=blue, fg=font, pady=10, padx=10)
+        self.book_instructions_label = Label(self.booking_frame, text="Please enter your name, phone number\nand the amount of tickets you want to buy.\nThe following prices include GST:\nA seat costs $25 and a bed costs $50.", font="Helvetica 12 italic", bg=blue, fg=font, pady=10, padx=10)
         self.book_instructions_label.grid(row=1)
 
         # name input (row 2) - put entry box in a frame to have more style options
         self.book_name_frame = Frame(self.booking_frame, bg=gold, borderwidth=0, highlightthickness=2, highlightbackground=font)
         self.book_name_frame.grid(row=2, padx=20, pady=5)
+
+        name_placeholder="Enter your name ..."
         
         self.book_name_entry = Entry(self.book_name_frame, font="Helvetica 14", bg=gold, fg=font, highlightthickness=0, bd=0)
         self.book_name_entry.grid(padx=10, pady=5)
+        self.book_name_entry.insert(0, name_placeholder)
+
+        def clear_placeholder(event):
+            self.book_name_entry.delete(0, "end")
+
+        def add_placeholder(event):
+            self.book_name_entry.insert(0, name_placeholder)
+
+        self.book_name_entry.bind("<FocusIn>", clear_placeholder)
+        self.book_name_entry.bind("<FocusOut>", add_placeholder)
 
         # phone number input (row 3) - put entry box in a frame to have more style options
         self.book_number_frame = Frame(self.booking_frame, bg=gold, borderwidth=0, highlightthickness=2, highlightbackground=font)
