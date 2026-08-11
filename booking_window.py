@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+import re
 
 class Booking:
     def __init__(self, parent):
@@ -9,8 +10,6 @@ class Booking:
         blue = "#004B8D"
         gold = "#E4A024"
         red = "#FFCCCC"
-        purple = "#9933FF"
-        green = "#00CC00"
 
         PNA_available_seats = 20
         PNA_available_beds = 15
@@ -20,8 +19,14 @@ class Booking:
 
         self.style = ttk.Style()
         self.style.theme_use('clam')
+
+        # spinbox style
         self.style.configure('amount.TSpinbox', fieldbackground=gold, background=gold, arrowcolor=blue, foreground=white, bordercolor=gold, lightcolor=gold, darkcolor=gold)
         self.style.map('amount.TSpinbox', bordercolor=[('focus', gold)], lightcolor=[('focus', gold)], darkcolor=[('focus', gold)], fieldbackground=[('focus', gold)], foreground=[('focus', white)], selectbackground=[('focus', gold), ('!focus', gold)], selectforeground=[('focus', white), ('!focus', white)])
+
+        # book button style
+        self.style.configure('Book.TButton', background=gold, foreground=white, font="Helvetica 16 bold", padding=(10, 5), borderwidth=4, bordercolor=gold, lightcolor=gold, darkcolor=gold, focuscolor=gold)
+        self.style.map('Book.TButton', background=[('active', gold), ('pressed', gold)], foreground=[('active', white), ('pressed', white)], bordercolor=[('active', white), ('pressed', white)], lightcolor=[('active', white), ('pressed', white)], darkcolor=[('active', white), ('pressed', white)], focuscolor=[('active', gold), ('pressed', gold)])
 
         # placeholder function to give instructions for name and phone number entry fields
         def placeholder_setup(entry, placeholder):
@@ -45,7 +50,7 @@ class Booking:
             entry.bind("<FocusIn>", clear_placeholder)
             entry.bind("<FocusOut>", add_placeholder)
 
-        # Validation function to check if spin box input is numeric and within amount of available seats/beds or empty
+        # validation function to check if spin box input is numeric and within amount of available seats/beds or empty
         def validate_spinbox(new_value, limit):
             if (new_value.isdigit() and int(new_value)<=limit) or new_value == "":
                 return True
@@ -66,7 +71,7 @@ class Booking:
         self.heading_label.grid(row=0)
 
         # instructions (row 1)
-        self.instructions_label = Label(self.booking_frame, text="Please enter your name, phone number\nand the amount of tickets you want to buy.\nThe following prices include GST:\nA seat costs $25 and a bed costs $50.", font="Helvetica 12 italic", bg=blue, fg=white, pady=10, padx=10)
+        self.instructions_label = Label(self.booking_frame, text="Please enter your full name, phone number\nand the amount of tickets you want to buy.\nThe following prices include GST:\nA seat costs $25 and a bed costs $50.", font="Helvetica 12 italic", bg=blue, fg=white, pady=10, padx=10)
         self.instructions_label.grid(row=1)
 
         # name input (row 2) - put entry box in a frame to have more style options
@@ -89,7 +94,7 @@ class Booking:
 
         # PN -> A
         # frame (row 4)
-        self.PNA_frame = Label(self.booking_frame, bg=gold, fg=white, highlightthickness=2, highlightbackground=white)
+        self.PNA_frame = Frame(self.booking_frame, bg=gold, highlightthickness=2, highlightbackground=white)
         self.PNA_frame.grid(row=4, pady=(20, 10))
 
         # PNA heading (row 0)
@@ -140,7 +145,7 @@ class Booking:
 
         # PN -> A
         # frame (row 5)
-        self.APN_frame = Label(self.booking_frame, bg=gold, fg=white, highlightthickness=2, highlightbackground=white)
+        self.APN_frame = Frame(self.booking_frame, bg=gold, highlightthickness=2, highlightbackground=white)
         self.APN_frame.grid(row=5, pady=10)
 
         # APN heading (row 0)
@@ -186,6 +191,43 @@ class Booking:
         # beds availability (row 0, column 1)
         self.APN_beds_available_label = Label(self.APN_beds_frame, text=f"Seats ({APN_available_beds} available)", font="Helvetica 12", justify=RIGHT, bg=gold, fg=white, padx=10)
         self.APN_beds_available_label.grid(row=0, column=1)
+
+        # error message (row 6)
+        self.error_label = Label(self.booking_frame, justify=CENTER, fg=red, bg=blue, text="", font="Helvetica 12 italic")
+        self.error_label.grid(row=6, pady=10)
+
+        # Book button (row 7)
+        self.book_button = ttk.Button(self.booking_frame, text="Book", style="Book.TButton", command=self.check)
+        self.book_button.grid(row=7)
+
+    def check(self):
+        error_message = ""
+        self.error_label.config(text=error_message)
+        pattern = r"^[0-9 +\-]{8,}$"
+        name = self.name_entry.get()
+        number = self.number_entry.get()
+        PNA_seats = int(self.PNA_seats_spinbox.get())
+        PNA_beds = int(self.PNA_beds_spinbox.get())
+        APN_seats = int(self.APN_seats_spinbox.get())
+        APN_beds = int(self.APN_beds_spinbox.get())
+
+        if name == "Enter your name" or len(name) < 3:
+            error_message += "Please check that you have entered\nyour name correctly.\n"
+
+        if not(re.fullmatch(pattern, number)):
+            error_message += "Please check that you have entered\nyour phone number correctly.\n"
+
+        if (PNA_seats+PNA_beds+APN_seats+APN_beds) == 0:
+            error_message += "Book at least one seat."
+
+        if len(error_message) > 0:
+            self.error_label.config(text=error_message)
+        else:
+            print("passed")
+        
+
+#purple = "#9933FF"
+# green = "#00CC00"
 
 # main routine
 if __name__ == "__main__":
