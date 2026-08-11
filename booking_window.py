@@ -223,11 +223,36 @@ class Booking:
         if len(error_message) > 0:
             self.error_label.config(text=error_message)
         else:
-            print("passed")
-        
+            self.confirm()
 
-#purple = "#9933FF"
-# green = "#00CC00"
+    def confirm(self):
+        open_confirmation = Confirm(self)
+        
+class Confirm:
+    def __init__(self, parent):
+        # creating colour variables
+        white = "#FFFFFF"
+        grey = "#E6E6E6"
+        blue = "#004B8D"
+        gold = "#E4A024"
+        red = "#FFCCCC"
+        purple = "#9933FF"
+        green = "#00CC00"
+
+        # child window
+        self.confirm_box = Toplevel()
+
+        # confirm frame
+        self.confirm_frame = Frame(self.confirm_box, bg=gold, pady=10)
+        self.confirm_frame.grid()
+
+        # heading (row 0)
+        self.heading_label = Label(self.confirm_frame, text="Your Booking", font="Helvetica 20 bold", bg=gold, fg=white, padx=10, pady=10)
+        self.heading_label.grid(row=0)
+
+        # instructions (row 1)
+        self.instructions_label = Label(self.confirm_frame, text="Please check your name, number and booking.", font="Helvetica 12 italic", bg=gold, fg=white, pady=10, padx=10)
+        self.instructions_label.grid(row=1)
 
 # main routine
 if __name__ == "__main__":
