@@ -226,7 +226,7 @@ class Booking:
             self.confirm()
 
     def confirm(self):
-        open_confirmation = Confirm(self)
+        self.confirm_window = Confirm(self.booking_frame)
         
 class Confirm:
     def __init__(self, parent):
@@ -238,6 +238,16 @@ class Confirm:
         red = "#FFCCCC"
         purple = "#9933FF"
         green = "#00CC00"
+
+        # get the main window
+        self.main_window = parent.winfo_toplevel()
+
+        # grey transparent overlay without title bar
+        self.overlay = Toplevel(self.main_window)
+        self.overlay.configure(bg="grey")
+        self.overlay.attributes("-alpha", 0.5)
+        self.overlay.overrideredirect(True)
+        self.overlay.geometry(f"{self.main_window.winfo_width()}x" f"{self.main_window.winfo_height()}+" f"{self.main_window.winfo_rootx()}+" f"{self.main_window.winfo_rooty()-32}")
 
         # child window
         self.confirm_box = Toplevel()
