@@ -226,10 +226,12 @@ class Booking:
             self.confirm()
 
     def confirm(self):
-        self.confirm_window = Confirm(self.booking_frame)
-        
+        self.confirm_window = Confirm(self.booking_frame, self)
+
+
+
 class Confirm:
-    def __init__(self, parent):
+    def __init__(self, parent, booking):
         # creating colour variables
         white = "#FFFFFF"
         grey = "#E6E6E6"
@@ -238,6 +240,10 @@ class Confirm:
         red = "#FFCCCC"
         purple = "#9933FF"
         green = "#00CC00"
+
+        self.booking = booking
+        name = self.booking.name_entry.get()
+        number = self.booking.number_entry.get()
 
         # get the main window
         self.main_window = parent.winfo_toplevel()
@@ -263,6 +269,66 @@ class Confirm:
         # instructions (row 1)
         self.instructions_label = Label(self.confirm_frame, text="Please check your name, number and booking.", font="Helvetica 12 italic", bg=gold, fg=white, pady=10, padx=10)
         self.instructions_label.grid(row=1)
+
+        # name (row 2)
+        self.name_label = Label(self.confirm_frame, bg=blue, fg=white, text=name, font="Helvetica 14", highlightthickness=2, highlightbackground=white, relief="flat", padx=12, pady=5)
+        self.name_label.grid(row=2, padx=20, pady=5, sticky="ew")
+
+        # number (row 3)
+        self.name_label = Label(self.confirm_frame, bg=blue, fg=white, text=number, font="Helvetica 14", highlightthickness=2, highlightbackground=white, relief="flat", padx=12, pady=5)
+        self.name_label.grid(row=3, padx=20, pady=5, sticky="ew")
+
+        # PN -> A
+
+        # PNA frame (row 4)
+        self.PNA_frame = Frame(self.confirm_frame, bg=blue, highlightthickness=2, highlightbackground=white)
+        self.PNA_frame.grid(row=4, padx=20, pady=20, columnspan=4, sticky="ew")
+
+        # PNA heading (row 0)
+        self.PNA_heading_label = Label(self.PNA_frame, bg=blue, fg=white, text="Palmerston North -> Auckland", font="Helvetica 12 bold", justify=CENTER, padx=10)
+        self.PNA_heading_label.grid(row=0, pady=(5, 7), columnspan=4, sticky="ew")
+
+        # PNA category frame (row 1)
+        self.PNA_category_frame = Frame(self.PNA_frame, bg=blue, highlightthickness=2, highlightbackground=white)
+        self.PNA_category_frame.grid(row=1, columnspan=4, sticky="ew")
+
+        # PNA seats heading (row 0, col 0)
+        self.PNA_seats_heading_label = Label(self.PNA_category_frame, bg=blue, fg=white, text="Seats", font="Helvetice 12 bold", justify=CENTER, padx=10, pady=5)
+        self.PNA_seats_heading_label.grid(row=0, column=0, columnspan=2, sticky="ew")
+
+        # PNA beds heading (row 0, col 1)
+        self.PNA_beds_heading_label = Label(self.PNA_category_frame, bg=blue, fg=white, text="Beds", font="Helvetice 12 bold", justify=CENTER, padx=10, pady=5)
+        self.PNA_beds_heading_label.grid(row=0, column=2, columnspan=2, sticky="ew")
+
+        # PNA values frame (row 2)
+        self.PNA_values_frame = Frame(self.PNA_frame, bg=blue, highlightthickness=2, highlightbackground=white)
+        self.PNA_values_frame.grid(row=2, columnspan=4, sticky="ew")
+
+        # PNA seats amount (row 0 col 0)
+        self.PNA_seats_number_label = Label(self.PNA_values_frame, bg=blue, fg=white, text="0", font="Helvetica 12", justify= CENTER, padx=10, pady=5)
+        self.PNA_seats_number_label.grid(row=0, column=0, columnspan=1, sticky="ew")
+
+        # PNA seats price (row 0 col 1)
+        self.PNA_seats_price_label = Label(self.PNA_values_frame, bg=blue, fg=white, text="$0", font="Helvetica 12", justify= CENTER, padx=10, pady=5)
+        self.PNA_seats_price_label.grid(row=0, column=1, columnspan=1, sticky="ew")
+
+        # PNA beds amount (row 0 col 0)
+        self.PNA_beds_number_label = Label(self.PNA_values_frame, bg=blue, fg=white, text="0", font="Helvetica 12", justify= CENTER, padx=10, pady=5)
+        self.PNA_beds_number_label.grid(row=0, column=2, columnspan=1, sticky="ew")
+
+        # PNA beds price (row 0 col 1)
+        self.PNA_beds_price_label = Label(self.PNA_values_frame, bg=blue, fg=white, text="$0", font="Helvetica 12", justify= CENTER, padx=10, pady=5)
+        self.PNA_beds_price_label.grid(row=0, column=3, columnspan=1, sticky="ew")
+
+        for column in range(4):
+            self.PNA_frame.columnconfigure(column, weight=1)
+
+        for column in range(4):
+            self.PNA_category_frame.columnconfigure(column, weight=1)
+
+        for column in range(4):
+            self.PNA_values_frame.columnconfigure(column, weight=1)
+
 
 # main routine
 if __name__ == "__main__":
