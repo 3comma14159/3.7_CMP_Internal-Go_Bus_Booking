@@ -1,0 +1,1 @@
+Every line is one booking. The information is written the following way: Name, number, PNA seats amount, PNA beds amount, APN seats amoung, APN beds amount, total price, gst portion
