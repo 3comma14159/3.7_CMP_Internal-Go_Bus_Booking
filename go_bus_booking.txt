@@ -1,1 +1,4 @@
-Every line is one booking. The information is written the following way: Name, number, PNA seats amount, PNA beds amount, APN seats amoung, APN beds amount, total price, gst portion
+Every line is one booking. The information is written the following way:
+Name, number, PNA seats amount, PNA beds amount, APN seats amount, APN beds amount, total price, gst portion
+Hannah Mattheis, +64 21 012 3456, 16, 2, 6, 0, 650, 84.78
+A very very very very very very long name, 0382348, 4, 13, 14, 15, 1850, 241.3

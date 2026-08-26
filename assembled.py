@@ -208,7 +208,7 @@ class Booking:
     def check(self):
         error_message = ""
         self.error_label.config(text=error_message)
-        pattern = r"^[0-9 +\-]{8,}$"
+        pattern = r"^\+?(?=(?:\D*\d){4,18}\D*$)[0-9\- /]+$"
         name = self.name_entry.get()
         number = self.number_entry.get()
         PNA_seats = int(self.PNA_seats_spinbox.get())
@@ -216,7 +216,7 @@ class Booking:
         APN_seats = int(self.APN_seats_spinbox.get())
         APN_beds = int(self.APN_beds_spinbox.get())
 
-        if (name == "Enter your full name") or (len(name) < 3) or (not(" " in name)):
+        if (name == "Enter your full name") or (len(name) < 2):
             error_message += "Please check that you have entered\nyour name correctly.\n"
 
         if not(re.fullmatch(pattern, number)):

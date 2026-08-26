@@ -22,7 +22,7 @@ class App(tk.Tk):
         f = open("go_bus_booking.txt", "w+")
         f.truncate(0)
         f.seek(0)
-        f.write("Every line is one booking. The information is written the following way: Name, number, PNA seats amount, PNA beds amount, APN seats amoung, APN beds amount, total price, gst portion\n")
+        f.write("Every line is one booking. The information is written the following way:\nName, number, PNA seats amount, PNA beds amount, APN seats amount, APN beds amount, total price, gst portion\n")
         f.close()
 
         self.show_booking_page()
@@ -50,15 +50,13 @@ class Booking(Frame):
         self.booking_content.grid(row=0, column=0)
 
         # -------------------------------------------------------------------------------------------------------
-        #                                   Preparation (Variables, Styles, Functions)
+        #                                   Preparation (Variables, Styles)
         # -------------------------------------------------------------------------------------------------------
         
-
         # Variables -------------------------------------------------------------------------------------------------------
 
         # creating colour variables
         white = "#FFFFFF"
-        grey = "#E6E6E6"
         blue = "#004B8D"
         gold = "#E4A024"
         red = "#FFCCCC"
@@ -85,44 +83,6 @@ class Booking(Frame):
         self.style.map('Book.TButton', background=[('active', gold), ('pressed', gold)], foreground=[('active', white), ('pressed', white)], bordercolor=[('active', white), ('pressed', white)], lightcolor=[('active', white), ('pressed', white)], darkcolor=[('active', white), ('pressed', white)], focuscolor=[('active', gold), ('pressed', gold)])
 
 
-        # Functions -------------------------------------------------------------------------------------------------------
-
-        # placeholder for name and phone number entry fields when field is empty - called once from name and phone number entry
-        def placeholder_setup(entry, placeholder):
-            # placeholder text displayed in grey
-            entry.insert(0, placeholder)
-            entry.config(fg=grey)
-
-            # no entry yet -> placeholder is removed - called when field is clicked
-            def clear_placeholder(event):
-                if event.widget.get() == placeholder:
-                    event.widget.delete(0, "end")
-                    event.widget.config(fg=white)
-
-            # no entry yet -> placeholder is added - called when field is left
-            def add_placeholder(event):
-                if len(event.widget.get()) == 0:
-                    event.widget.insert(0, placeholder)
-                    event.widget.config(fg=grey)
-
-            # when field clicked or left, placeholder clear and add functions are called
-            entry.bind("<FocusIn>", clear_placeholder)
-            entry.bind("<FocusOut>", add_placeholder)
-
-        # validation spinbox input - called when spin box input changed
-        def validate_spinbox(new_value, limit):
-            # allows only numeric input within availability range or delete or empty field
-            if (new_value.isdigit() and int(new_value)<=limit) or new_value == "":
-                return True
-            return False
-
-        # empty spinbox -> 0 inserted - called when spin box left
-        def spin_box_focus_out(event):
-            if event.widget.get() == "":
-                event.widget.delete(0, "end")
-                event.widget.insert(0, "0")
-
-
 
         # -------------------------------------------------------------------------------------------------------
         #                                   heading, instructions, name and number input
@@ -142,7 +102,7 @@ class Booking(Frame):
         
         self.name_entry = Entry(self.name_frame, font="Helvetica 14", bg=gold, fg=white, highlightthickness=0, bd=0)
         self.name_entry.grid(padx=12, pady=5)
-        placeholder_setup(self.name_entry, "Enter your full name")
+        self.placeholder_setup(self.name_entry, "Enter your full name")
 
         # phone number input (row 3) - put entry box in a frame to have more style options
         self.number_frame = Frame(self.booking_content, bg=gold, borderwidth=0, highlightthickness=2, highlightbackground=white)
@@ -150,7 +110,7 @@ class Booking(Frame):
                 
         self.number_entry = Entry(self.number_frame, font="Helvetica 14", bg=gold, fg=white, highlightthickness=0, bd=0)
         self.number_entry.grid(padx=12, pady=5)
-        placeholder_setup(self.number_entry, "Enter your phone number")
+        self.placeholder_setup(self.number_entry, "Enter your phone number")
 
 
 
@@ -179,11 +139,11 @@ class Booking(Frame):
         self.PNA_seats_frame.grid(row=2, pady=(7, 7))
 
         # spinbox (row 0, column 0)
-        validate_PNA_seats = parent.register(lambda P: validate_spinbox(P, self.PNA_available_seats))
+        validate_PNA_seats = parent.register(lambda P: self.validate_spinbox(P, self.PNA_available_seats))
         self.PNA_seats_spinbox = ttk.Spinbox(self.PNA_seats_frame, width=2, style='amount.TSpinbox', justify=RIGHT, font="Helvetica 12", from_=0, to=self.PNA_available_seats, validate="key", validatecommand=(validate_PNA_seats, '%P'))
         self.PNA_seats_spinbox.grid(row=0, column=0, padx=(10, 0))
         self.PNA_seats_spinbox.set("0")
-        self.PNA_seats_spinbox.bind("<FocusOut>", spin_box_focus_out)
+        self.PNA_seats_spinbox.bind("<FocusOut>", self.spin_box_focus_out)
 
         # seats availability (row 0, column 1)
         self.PNA_seats_available_label = Label(self.PNA_seats_frame, text=f"Seats ({self.PNA_available_seats} available)", font="Helvetica 12", justify=RIGHT, bg=gold, fg=white, padx=10)
@@ -201,11 +161,11 @@ class Booking(Frame):
         self.PNA_beds_frame.grid(row=4, pady=(7, 5))
 
         # spinbox (row 0, column 0)
-        validate_PNA_beds = parent.register(lambda P: validate_spinbox(P, self.PNA_available_beds))
+        validate_PNA_beds = parent.register(lambda P: self.validate_spinbox(P, self.PNA_available_beds))
         self.PNA_beds_spinbox = ttk.Spinbox(self.PNA_beds_frame, width=2, style='amount.TSpinbox', justify=RIGHT, font="Helvetica 12", from_=0, to=self.PNA_available_beds, validate="key", validatecommand=(validate_PNA_beds, '%P'))
         self.PNA_beds_spinbox.grid(row=0, column=0, padx=(10, 0))
         self.PNA_beds_spinbox.set("0")
-        self.PNA_beds_spinbox.bind("<FocusOut>", spin_box_focus_out)
+        self.PNA_beds_spinbox.bind("<FocusOut>", self.spin_box_focus_out)
 
         # beds availability (row 0, column 1)
         self.PNA_beds_available_label = Label(self.PNA_beds_frame, text=f"Beds ({self.PNA_available_beds} available)", font="Helvetica 12", justify=RIGHT, bg=gold, fg=white, padx=10)
@@ -237,11 +197,11 @@ class Booking(Frame):
         self.APN_seats_frame.grid(row=2, pady=(7, 7))
 
         # spinbox (row 0, column 0)
-        validate_APN_seats = parent.register(lambda P: validate_spinbox(P, self.APN_available_seats))
+        validate_APN_seats = parent.register(lambda P: self.validate_spinbox(P, self.APN_available_seats))
         self.APN_seats_spinbox = ttk.Spinbox(self.APN_seats_frame, width=2, style='amount.TSpinbox', justify=RIGHT, font="Helvetica 12", from_=0, to=self.APN_available_seats, validate="key", validatecommand=(validate_APN_seats, '%P'))
         self.APN_seats_spinbox.grid(row=0, column=0, padx=(10, 0))
         self.APN_seats_spinbox.set("0")
-        self.APN_seats_spinbox.bind("<FocusOut>", spin_box_focus_out)
+        self.APN_seats_spinbox.bind("<FocusOut>", self.spin_box_focus_out)
 
         # seats availability (row 0, column 1)
         self.APN_seats_available_label = Label(self.APN_seats_frame, text=f"Seats ({self.APN_available_seats} available)", font="Helvetica 12", justify=RIGHT, bg=gold, fg=white, padx=10)
@@ -259,11 +219,11 @@ class Booking(Frame):
         self.APN_beds_frame.grid(row=4, pady=(7, 5))
 
         # spinbox (row 0, column 0)
-        validate_APN_beds = parent.register(lambda P: validate_spinbox(P, self.APN_available_beds))
+        validate_APN_beds = parent.register(lambda P: self.validate_spinbox(P, self.APN_available_beds))
         self.APN_beds_spinbox = ttk.Spinbox(self.APN_beds_frame, width=2, style='amount.TSpinbox', justify=RIGHT, font="Helvetica 12", from_=0, to=self.APN_available_beds, validate="key", validatecommand=(validate_APN_beds, '%P'))
         self.APN_beds_spinbox.grid(row=0, column=0, padx=(10, 0))
         self.APN_beds_spinbox.set("0")
-        self.APN_beds_spinbox.bind("<FocusOut>", spin_box_focus_out)
+        self.APN_beds_spinbox.bind("<FocusOut>", self.spin_box_focus_out)
 
         # beds availability (row 0, column 1)
         self.APN_beds_available_label = Label(self.APN_beds_frame, text=f"Seats ({self.APN_available_beds} available)", font="Helvetica 12", justify=RIGHT, bg=gold, fg=white, padx=10)
@@ -289,6 +249,42 @@ class Booking(Frame):
     #                                   Functions
     # -------------------------------------------------------------------------------------------------------
 
+    # placeholder for name and phone number entry fields when field is empty - called once from name and phone number entry
+    def placeholder_setup(self, entry, placeholder):
+        # placeholder text displayed in grey
+        entry.insert(0, placeholder)
+        entry.config(fg="#E6E6E6")
+
+        # no entry yet -> placeholder is removed - called when field is clicked
+        def clear_placeholder(event):
+            if event.widget.get() == placeholder:
+                event.widget.delete(0, "end")
+                event.widget.config(fg="#FFFFFF")
+
+        # no entry yet -> placeholder is added - called when field is left
+        def add_placeholder(event):
+            if len(event.widget.get()) == 0:
+                event.widget.insert(0, placeholder)
+                event.widget.config(fg="#E6E6E6")
+
+        # when field clicked or left, placeholder clear and add functions are called
+        entry.bind("<FocusIn>", clear_placeholder)
+        entry.bind("<FocusOut>", add_placeholder)
+
+    # validation spinbox input - called when spin box input changed
+    def validate_spinbox(self, new_value, limit):
+        # allows only numeric input within availability range or delete or empty field
+        if (new_value.isdigit() and int(new_value)<=limit) or new_value == "":
+            return True
+        return False
+
+    # empty spinbox -> 0 inserted - called when spin box left
+    def spin_box_focus_out(self, event):
+        if event.widget.get() == "":
+            event.widget.delete(0, "end")
+            event.widget.insert(0, "0")
+
+
     # check booking - called from booking button
     def check(self):
         # preparation of error message
@@ -304,16 +300,16 @@ class Booking(Frame):
         APN_beds = int(self.APN_beds_spinbox.get())
 
         # check that name has been entered and is at least one character, a space and at least another character
-        if (name == "Enter your full name") or (not(re.fullmatch("^.+\s.+$", name))):
+        if (name == "Enter your full name") or len(name) < 2:
             error_message += "Please check that you have entered\nyour name correctly.\n"
 
         # check that the number has max one plus at the beginning, between 4 and 18 numbers (0-9) and as many " ", "-" or "/" as the user wants
-        if not(re.fullmatch("^\+?(?=(?:\D*\d){4,18}\D*$)[0-9\- /]+$", number)):
+        if not(re.fullmatch(r"^\+?(?=(?:\D*\d){4,18}\D*$)[0-9\- /]+$", number)):
             error_message += "Please check that you have entered\nyour phone number correctly.\n"
         
         # checks that at least one seat is booked
         if (PNA_seats+PNA_beds+APN_seats+APN_beds) == 0:
-            error_message += "Book at least one seat."
+            error_message += "Book at least one seat or bed."
 
         # if error detected, the message is displayed, otherwise confirm page is opened
         if len(error_message) > 0:
@@ -725,9 +721,12 @@ class Confirm(Frame):
         self.booking.APN_available_seats -= APN_seats_amount
         self.booking.APN_available_beds -= APN_beds_amount
 
-        # reset booking page ui and raise it to top
-        self.booking.update_ui()
-        self.parent.show_booking_page()
+        # when buses are fully booked, close window, otherwise reset booking page ui and raise it to top
+        if (self.booking.PNA_available_seats + self.booking.PNA_available_beds + self.booking.APN_available_seats + self.booking.APN_available_beds) == 0:
+            self.parent.destroy()
+        else:
+            self.booking.update_ui()
+            self.parent.show_booking_page()
 
 # main routine
 if __name__ == "__main__":
